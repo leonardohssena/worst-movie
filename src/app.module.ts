@@ -9,10 +9,19 @@ import { HealthController } from '@infra/terminus'
 import { LoggerMiddleware } from '@interfaces/middleware'
 import { LoggerService } from '@infra/logger/logger.service'
 import { PrismaClientExceptionFilter } from '@infra/database/prisma/prisma-client-exceptions.filter'
+import { PrismaModule } from '@infra/database/prisma/prisma.module'
+import { UsersModule } from '@infra/modules/users.module'
 
 @Module({
   controllers: [HealthController],
-  imports: [AuthModule, ConfigModule.forRoot({ expandVariables: true, isGlobal: true }), HttpModule, TerminusModule],
+  imports: [
+    AuthModule,
+    ConfigModule.forRoot({ expandVariables: true, isGlobal: true }),
+    HttpModule,
+    PrismaModule,
+    UsersModule,
+    TerminusModule,
+  ],
   providers: [
     LoggerService,
     {
