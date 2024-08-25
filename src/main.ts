@@ -1,3 +1,5 @@
+import 'reflect-metadata'
+
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ConfigService } from '@nestjs/config'
 import { Logger } from '@nestjs/common'

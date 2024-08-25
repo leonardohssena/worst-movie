@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import { IUsersRepository } from '@infra/database/repositories/users/users.protocol'
+import { IUsersRepository } from '@domain/repositories/users/users.protocol'
 import User from '@domain/models/users.model'
 
 @Injectable()

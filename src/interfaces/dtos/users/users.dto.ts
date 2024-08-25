@@ -1,6 +1,7 @@
 import { Expose, plainToInstance } from 'class-transformer'
 import { ApiProperty } from '@nestjs/swagger'
 
+import TransformDate from '../shared/transform-date.helpers'
 import User from '@domain/models/users.model'
 
 export class UserDTO {
@@ -27,13 +28,15 @@ export class UserDTO {
 
   @Expose()
   @ApiProperty({ description: 'The creation date of the user' })
+  @TransformDate()
   createdAt: Date
 
   @Expose()
   @ApiProperty({ description: 'The date of the last user update' })
+  @TransformDate()
   updatedAt: Date
 
-  static toViewModel(user: User): UserDTO {
+  static toViewModel(user: User | User[]): UserDTO | UserDTO[] {
     return plainToInstance(UserDTO, user, { excludeExtraneousValues: true })
   }
 }

@@ -16,6 +16,6 @@ export class UsersController {
   @ApiOkResponse({ description: 'Users list.', isArray: true, type: UserDTO })
   async findAll(): Promise<UserDTO[]> {
     const users = await this.getAllUsersUseCase.execute()
-    return users.map(UserDTO.toViewModel)
+    return UserDTO.toViewModel(users) as UserDTO[]
   }
 }

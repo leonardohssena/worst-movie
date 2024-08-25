@@ -32,7 +32,6 @@ export default [
           allowSeparatedGroups: true,
         },
       ],
-      'sort-keys': ['warn', 'asc', { caseSensitive: true, minKeys: 2, natural: false }],
     },
   },
   prettier,
