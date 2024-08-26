@@ -1,13 +1,13 @@
 import { User as PrismaUser } from '@prisma/client'
 
-export default class User implements PrismaUser {
-  id: string
+import { BaseModel } from './base.model'
+
+export default class User extends BaseModel implements PrismaUser {
   email: string
   name: string
-  createdAt: Date
-  updatedAt: Date
 
   constructor(partial: Partial<User>) {
+    super(partial)
     Object.assign(this, partial)
   }
 }
