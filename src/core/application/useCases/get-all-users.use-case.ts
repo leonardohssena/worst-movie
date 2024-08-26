@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 
-import { IUsersRepository } from '@domain/repositories/users/users.protocol'
 import User from '@domain/models/users.model'
+import { IUsersRepository } from '@domain/repositories/users/users.protocol'
 
 @Injectable()
 export class GetAllUsersUseCase {

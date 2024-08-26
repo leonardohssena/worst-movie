@@ -1,8 +1,9 @@
-import { Expose, plainToInstance } from 'class-transformer'
 import { ApiProperty } from '@nestjs/swagger'
+import { Expose, plainToInstance } from 'class-transformer'
+
+import User from '@domain/models/users.model'
 
 import TransformDate from '../shared/transform-date.helpers'
-import User from '@domain/models/users.model'
 
 export class UserDTO {
   @Expose()

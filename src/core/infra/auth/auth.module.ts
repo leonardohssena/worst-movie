@@ -1,9 +1,9 @@
-import { ConfigModule } from '@nestjs/config'
 import { Module } from '@nestjs/common'
+import { ConfigModule } from '@nestjs/config'
 import { PassportModule } from '@nestjs/passport'
 
-import { JwtStrategy } from '@infra/auth/jwt.strategy'
 import authConfig from '@config/auth.config'
+import { JwtStrategy } from '@infra/auth/jwt.strategy'
 
 @Module({
   exports: [PassportModule, JwtStrategy],

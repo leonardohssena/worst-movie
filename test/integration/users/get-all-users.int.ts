@@ -1,9 +1,9 @@
 import { HttpStatus, INestApplication } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
+import { AppModule } from 'app.module'
 import { instanceToPlain } from 'class-transformer'
 import request from 'supertest'
 
-import { AppModule } from 'app.module'
 import { PrismaService } from '@infra/database/prisma/prisma.service'
 
 import { USER_DTO_OBJECT, USER_OBJECT } from '../../jest.mocks'

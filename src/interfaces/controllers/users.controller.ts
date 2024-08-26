@@ -1,5 +1,5 @@
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { Controller, Get } from '@nestjs/common'
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger'
 
 import { GetAllUsersUseCase } from '@application/useCases/get-all-users.use-case'
 import { UserDTO } from '@interfaces/dtos/users/users.dto'

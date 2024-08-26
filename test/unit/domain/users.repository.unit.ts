@@ -1,10 +1,10 @@
 import { Test } from '@nestjs/testing'
 
 import { IUsersRepository } from '@domain/repositories/users/users.protocol'
+import { UsersRepository } from '@domain/repositories/users/users.repository'
 import { PrismaService } from '@infra/database/prisma/prisma.service'
 
 import { USER_OBJECT } from '../../jest.mocks'
-import { UsersRepository } from '@domain/repositories/users/users.repository'
 
 describe('UsersRepository', () => {
   let usersRepository: IUsersRepository

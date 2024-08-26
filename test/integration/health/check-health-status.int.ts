@@ -1,9 +1,8 @@
 import { HttpStatus, INestApplication } from '@nestjs/common'
-import { Test, TestingModule } from '@nestjs/testing'
 import { HttpHealthIndicator } from '@nestjs/terminus'
-import request from 'supertest'
-
+import { Test, TestingModule } from '@nestjs/testing'
 import { AppModule } from 'app.module'
+import request from 'supertest'
 
 describe('HealthCheckEntrypoint', () => {
   let app: INestApplication

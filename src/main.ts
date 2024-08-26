@@ -1,12 +1,13 @@
+import { Logger } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { NestFactory } from '@nestjs/core'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+
+import { LoggerService } from '@infra/logger/logger.service'
+
 import 'reflect-metadata'
 
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
-import { ConfigService } from '@nestjs/config'
-import { Logger } from '@nestjs/common'
-import { NestFactory } from '@nestjs/core'
-
 import { AppModule } from './app.module'
-import { LoggerService } from '@infra/logger/logger.service'
 
 async function bootstrap() {
   try {
