@@ -1,7 +1,7 @@
 import { HttpModule } from '@nestjs/axios'
-import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common'
+import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
-import { APP_FILTER } from '@nestjs/core'
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
 import { TerminusModule } from '@nestjs/terminus'
 
 import { AuthModule } from '@infra/auth/auth.module'
@@ -10,7 +10,7 @@ import { PrismaClientExceptionFilter } from '@infra/database/prisma/prisma-clien
 import { LoggerService } from '@infra/logger/logger.service'
 import { UsersModule } from '@infra/modules/users.module'
 import { HealthController } from '@infra/terminus'
-import { LoggerMiddleware } from '@interfaces/middleware'
+import { LoggingInterceptor } from '@interfaces/interceptors/logger.interceptor'
 
 @Module({
   controllers: [HealthController],
@@ -28,10 +28,10 @@ import { LoggerMiddleware } from '@interfaces/middleware'
       provide: APP_FILTER,
       useClass: PrismaClientExceptionFilter,
     },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
   ],
 })
-export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggerMiddleware).forRoutes({ method: RequestMethod.ALL, path: '*' })
-  }
-}
+export class AppModule {}
