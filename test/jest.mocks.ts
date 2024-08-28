@@ -3,10 +3,10 @@ import { ObjectId } from 'mongodb'
 import User from '@domain/models/users.model'
 import { UserDTO } from '@interfaces/dtos/users/users.dto'
 
-export const USER_ID = new ObjectId()
+export const USER_ID = new ObjectId().toString()
 
 export const USER_OBJECT = new User({
-  id: USER_ID.toString(),
+  id: USER_ID,
   email: 'test@example.com',
   name: 'Test User',
   createdAt: new Date(),

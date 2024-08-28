@@ -1,28 +1,28 @@
 import { Test } from '@nestjs/testing'
 
-import { GetAllUsersUseCase } from '@application/useCases/users'
+import { GetUserByIdUseCase } from '@application/useCases/users'
 import { IUsersRepository } from '@domain/repositories/users/users.protocol'
 
-import { USER_OBJECT } from '../../jest.mocks'
+import { USER_ID, USER_OBJECT } from '../../jest.mocks'
 
-describe('GetAllUsersUseCase', () => {
-  let useCase: GetAllUsersUseCase
+describe('GetUserByIdUseCase', () => {
+  let useCase: GetUserByIdUseCase
   let usersRepository: IUsersRepository
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
-        GetAllUsersUseCase,
+        GetUserByIdUseCase,
         {
           provide: IUsersRepository,
           useFactory: () => ({
-            findAll: jest.fn(),
+            findOne: jest.fn(),
           }),
         },
       ],
     }).compile()
 
-    useCase = moduleRef.get<GetAllUsersUseCase>(GetAllUsersUseCase)
+    useCase = moduleRef.get<GetUserByIdUseCase>(GetUserByIdUseCase)
     usersRepository = moduleRef.get<IUsersRepository>(IUsersRepository)
   })
 
@@ -34,10 +34,10 @@ describe('GetAllUsersUseCase', () => {
     expect(useCase.execute).toBeDefined()
   })
 
-  it('should return an array of users', async () => {
-    ;(usersRepository.findAll as jest.Mock).mockResolvedValue([USER_OBJECT])
+  it('should return an user', async () => {
+    ;(usersRepository.findOne as jest.Mock).mockResolvedValue(USER_OBJECT)
 
-    const result = await useCase.execute()
-    expect(result).toEqual([USER_OBJECT])
+    const result = await useCase.execute(USER_ID)
+    expect(result).toEqual(USER_OBJECT)
   })
 })

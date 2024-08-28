@@ -10,8 +10,8 @@ export abstract class BaseRepository<T> implements IBaseRepository<T> {
     return this.model.findMany()
   }
 
-  async findOne(id: string): Promise<T | null> {
-    return this.model.findUnique({ where: { id } })
+  async findOne(data: Partial<T>): Promise<T | null> {
+    return this.model.findUnique({ where: data })
   }
 
   async create(data: Partial<T>): Promise<T> {
