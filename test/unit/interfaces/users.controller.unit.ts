@@ -1,12 +1,13 @@
 import { Test } from '@nestjs/testing'
 
-import { GetAllUsersUseCase, GetUserByIdUseCase } from '@application/useCases/users'
+import { CreateUserUseCase, GetAllUsersUseCase, GetUserByIdUseCase } from '@application/useCases/users'
 import { UsersController } from '@interfaces/controllers/users.controller'
 
 import { USER_DTO_OBJECT, USER_ID, USER_OBJECT } from '../../jest.mocks'
 
 describe('UsersController', () => {
   let usersController: UsersController
+  let createUserUseCase: CreateUserUseCase
   let getAllUsersUseCase: GetAllUsersUseCase
   let getUserByIdUseCase: GetUserByIdUseCase
 
@@ -26,16 +27,36 @@ describe('UsersController', () => {
             execute: jest.fn(),
           }),
         },
+        {
+          provide: CreateUserUseCase,
+          useFactory: () => ({
+            execute: jest.fn(),
+          }),
+        },
       ],
     }).compile()
 
     usersController = moduleRef.get<UsersController>(UsersController)
     getAllUsersUseCase = moduleRef.get<GetAllUsersUseCase>(GetAllUsersUseCase)
     getUserByIdUseCase = moduleRef.get<GetUserByIdUseCase>(GetUserByIdUseCase)
+    createUserUseCase = moduleRef.get<CreateUserUseCase>(CreateUserUseCase)
   })
 
   it('should be defined', () => {
     expect(usersController).toBeDefined()
+  })
+
+  describe('Method create', () => {
+    it('should have a create method', () => {
+      expect(usersController.create).toBeDefined()
+    })
+
+    it('should to create an user', async () => {
+      ;(createUserUseCase.execute as jest.Mock).mockResolvedValue(USER_OBJECT)
+
+      const users = await usersController.create(USER_OBJECT)
+      expect(users).toEqual(USER_DTO_OBJECT)
+    })
   })
 
   describe('Method findAll', () => {

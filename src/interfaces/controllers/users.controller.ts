@@ -1,6 +1,7 @@
-import { Controller, Get, Param } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
+  ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -8,8 +9,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger'
 
-import { GetAllUsersUseCase, GetUserByIdUseCase } from '@application/useCases/users'
-import { GetUserByIdDto, UserDTO } from '@interfaces/dtos/users'
+import { CreateUserUseCase, GetAllUsersUseCase, GetUserByIdUseCase } from '@application/useCases/users'
+import { CreateUserDto, GetUserByIdDto, UserDTO } from '@interfaces/dtos/users'
 import { BadRequestError, NotFoundError } from '@shared/errors'
 
 @ApiTags('Users')
@@ -18,6 +19,7 @@ export class UsersController {
   constructor(
     private readonly getAllUsersUseCase: GetAllUsersUseCase,
     private readonly getUserByIdUseCase: GetUserByIdUseCase,
+    private readonly createUserUseCase: CreateUserUseCase,
   ) {}
 
   @Get()
@@ -30,7 +32,7 @@ export class UsersController {
     return UserDTO.toViewModel(users) as UserDTO[]
   }
 
-  @Get('/:id')
+  @Get(':id')
   @ApiOperation({
     summary: 'Find user by id',
   })
@@ -38,12 +40,24 @@ export class UsersController {
     name: 'id',
     type: String,
     description: 'The user id',
+    example: '641484f003c96fe562c53abd',
   })
   @ApiOkResponse({ description: 'User found.', type: UserDTO })
   @ApiNotFoundResponse({ description: 'User not found.', type: NotFoundError })
   @ApiBadRequestResponse({ description: 'Invalid user id.', type: BadRequestError })
   async findOne(@Param() params: GetUserByIdDto): Promise<UserDTO> {
     const user = await this.getUserByIdUseCase.execute(params.id)
+    return UserDTO.toViewModel(user) as UserDTO
+  }
+
+  @Post()
+  @ApiOperation({
+    summary: 'Create new user',
+  })
+  @ApiCreatedResponse({ description: 'User created.', type: UserDTO })
+  @ApiBadRequestResponse({ description: 'Invalid user data.', type: BadRequestError })
+  async create(@Body() data: CreateUserDto): Promise<UserDTO> {
+    const user = await this.createUserUseCase.execute(data)
     return UserDTO.toViewModel(user) as UserDTO
   }
 }

@@ -18,6 +18,7 @@ describe('UsersRepository', () => {
           provide: PrismaService,
           useFactory: () => ({
             user: {
+              create: jest.fn(),
               findMany: jest.fn(),
               findUnique: jest.fn(),
             },
@@ -32,6 +33,19 @@ describe('UsersRepository', () => {
 
   it('should be defined', () => {
     expect(usersRepository).toBeDefined()
+  })
+
+  describe('Method Create', () => {
+    it('should have a created method', () => {
+      expect(usersRepository.create).toBeDefined()
+    })
+
+    it('should to create an user', async () => {
+      ;(prisma.user.create as jest.Mock).mockResolvedValue(USER_OBJECT)
+
+      const users = await usersRepository.create(USER_OBJECT)
+      expect(users).toEqual(USER_OBJECT)
+    })
   })
 
   describe('Method findAll', () => {
