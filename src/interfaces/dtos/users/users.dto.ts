@@ -9,7 +9,7 @@ export class UserDTO {
   @Expose()
   @ApiProperty({
     description: 'The id of the user',
-    example: '641484f003c96fe562c53abf',
+    example: '641484f003c96fe562c53abd',
   })
   id: string
 

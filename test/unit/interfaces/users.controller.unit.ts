@@ -59,7 +59,7 @@ describe('UsersController', () => {
     it('should return an user', async () => {
       ;(getUserByIdUseCase.execute as jest.Mock).mockResolvedValue(USER_OBJECT)
 
-      const users = await usersController.findOne(USER_ID)
+      const users = await usersController.findOne({ id: USER_ID })
       expect(users).toEqual(USER_DTO_OBJECT)
     })
   })

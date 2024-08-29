@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common'
+import { Logger, ValidationPipe } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
@@ -32,6 +32,8 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, options)
     SwaggerModule.setup('api', app, document)
     Logger.log('Mapped {/api, GET} Swagger api route', 'RouterExplorer')
+
+    app.useGlobalPipes(new ValidationPipe())
 
     await app.listen(PORT)
     Logger.log(`🚀  Server ready at http://${HOST}:${PORT})}`, 'Bootstrap')

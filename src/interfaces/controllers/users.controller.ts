@@ -1,9 +1,16 @@
 import { Controller, Get, Param } from '@nestjs/common'
-import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBadRequestResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger'
 
 import { GetAllUsersUseCase, GetUserByIdUseCase } from '@application/useCases/users'
-import { UserDTO } from '@interfaces/dtos/users/users.dto'
-import { NotFoundError } from '@shared/errors/NotFoundError'
+import { GetUserByIdDto, UserDTO } from '@interfaces/dtos/users'
+import { BadRequestError, NotFoundError } from '@shared/errors'
 
 @ApiTags('Users')
 @Controller('users')
@@ -34,8 +41,9 @@ export class UsersController {
   })
   @ApiOkResponse({ description: 'User found.', type: UserDTO })
   @ApiNotFoundResponse({ description: 'User not found.', type: NotFoundError })
-  async findOne(@Param('id') id: string): Promise<UserDTO> {
-    const user = await this.getUserByIdUseCase.execute(id)
+  @ApiBadRequestResponse({ description: 'Invalid user id.', type: BadRequestError })
+  async findOne(@Param() params: GetUserByIdDto): Promise<UserDTO> {
+    const user = await this.getUserByIdUseCase.execute(params.id)
     return UserDTO.toViewModel(user) as UserDTO
   }
 }

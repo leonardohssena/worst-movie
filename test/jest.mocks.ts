@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb'
 
 import User from '@domain/models/users.model'
-import { UserDTO } from '@interfaces/dtos/users/users.dto'
+import { UserDTO } from '@interfaces/dtos/users'
 
 export const USER_ID = new ObjectId().toString()
 

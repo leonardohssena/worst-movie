@@ -1,4 +1,4 @@
-import { HttpStatus, INestApplication } from '@nestjs/common'
+import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
 import { AppModule } from 'app.module'
 import { instanceToPlain } from 'class-transformer'
@@ -26,6 +26,7 @@ describe('GetUserByIdEntrypoint', () => {
 
     prisma = moduleRef.get<PrismaService>(PrismaService)
     app = moduleRef.createNestApplication({ logger: false })
+    app.useGlobalPipes(new ValidationPipe())
     app.setGlobalPrefix('api')
     await app.init()
   })
@@ -41,6 +42,10 @@ describe('GetUserByIdEntrypoint', () => {
     ;(prisma.user.findUnique as jest.Mock).mockResolvedValue(null)
 
     await request(app.getHttpServer()).get(`/api/users/${USER_ID}`).expect(HttpStatus.NOT_FOUND)
+  })
+
+  it('/GET api/users/:id - Invalid id', async () => {
+    await request(app.getHttpServer()).get(`/api/users/12`).expect(HttpStatus.BAD_REQUEST)
   })
 
   afterAll(async () => {
