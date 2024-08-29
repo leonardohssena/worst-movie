@@ -25,7 +25,7 @@ describe('GetAllUsersEntrypoint', () => {
       .compile()
 
     prisma = moduleRef.get<PrismaService>(PrismaService)
-    app = moduleRef.createNestApplication()
+    app = moduleRef.createNestApplication({ logger: false })
     app.setGlobalPrefix('api')
     await app.init()
   })

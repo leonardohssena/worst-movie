@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 
 import { GetUserByIdUseCase } from '@application/useCases/users'
@@ -39,5 +40,11 @@ describe('GetUserByIdUseCase', () => {
 
     const result = await useCase.execute(USER_ID)
     expect(result).toEqual(USER_OBJECT)
+  })
+
+  it('should throw a NotFoundException if the user does not exist', async () => {
+    ;(usersRepository.findOne as jest.Mock).mockResolvedValue(null)
+
+    await expect(useCase.execute(USER_ID)).rejects.toThrow(NotFoundException)
   })
 })

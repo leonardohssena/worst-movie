@@ -1,4 +1,3 @@
-import { NotFoundException } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 
 import { GetAllUsersUseCase, GetUserByIdUseCase } from '@application/useCases/users'
@@ -62,12 +61,6 @@ describe('UsersController', () => {
 
       const users = await usersController.findOne(USER_ID)
       expect(users).toEqual(USER_DTO_OBJECT)
-    })
-
-    it('should throw a NotFoundException if the user does not exist', async () => {
-      ;(getUserByIdUseCase.execute as jest.Mock).mockResolvedValue(null)
-
-      await expect(usersController.findOne(USER_ID)).rejects.toThrow(NotFoundException)
     })
   })
 })

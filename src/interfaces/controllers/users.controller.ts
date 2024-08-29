@@ -1,4 +1,4 @@
-import { Controller, Get, HttpException, NotFoundException, Param } from '@nestjs/common'
+import { Controller, Get, Param } from '@nestjs/common'
 import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger'
 
 import { GetAllUsersUseCase, GetUserByIdUseCase } from '@application/useCases/users'
@@ -34,9 +34,8 @@ export class UsersController {
   })
   @ApiOkResponse({ description: 'User found.', type: UserDTO })
   @ApiNotFoundResponse({ description: 'User not found.', type: NotFoundError })
-  async findOne(@Param('id') id: string): Promise<UserDTO | HttpException> {
+  async findOne(@Param('id') id: string): Promise<UserDTO> {
     const user = await this.getUserByIdUseCase.execute(id)
-    if (!user) throw new NotFoundException(`The user {${id}} has not found.`)
     return UserDTO.toViewModel(user) as UserDTO
   }
 }
