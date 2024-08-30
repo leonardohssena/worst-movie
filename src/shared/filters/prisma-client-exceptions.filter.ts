@@ -27,7 +27,6 @@ export class PrismaClientExceptionFilter implements ExceptionFilter {
         statusCode = HttpStatus.CONFLICT
         message = `Unique constraint failed on the ${exception.meta.target}`
         break
-      // Adicione outros códigos conforme necessário
     }
 
     this.logger.error(

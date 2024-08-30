@@ -1,5 +1,6 @@
 import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 import { AppModule } from 'app.module'
 import { instanceToPlain } from 'class-transformer'
 import request from 'supertest'
@@ -20,6 +21,7 @@ describe('CreateUserEntrypoint', () => {
       .useValue({
         user: {
           create: jest.fn(),
+          findUnique: jest.fn(),
         },
       })
       .compile()
@@ -32,6 +34,7 @@ describe('CreateUserEntrypoint', () => {
   })
 
   it('/POST api/users', async () => {
+    ;(prisma.user.findUnique as jest.Mock).mockResolvedValue(null)
     ;(prisma.user.create as jest.Mock).mockResolvedValue(USER_OBJECT)
 
     const response = await request(app.getHttpServer()).post(`/api/users`).send(USER_OBJECT).expect(HttpStatus.CREATED)
@@ -40,6 +43,27 @@ describe('CreateUserEntrypoint', () => {
 
   it('/POST api/users - Invalid data', async () => {
     await request(app.getHttpServer()).post(`/api/users`).send({}).expect(HttpStatus.BAD_REQUEST)
+  })
+
+  it('/POST api/users - User Already Exists', async () => {
+    ;(prisma.user.findUnique as jest.Mock).mockResolvedValue(USER_OBJECT)
+
+    await request(app.getHttpServer()).post(`/api/users`).send(USER_OBJECT).expect(HttpStatus.CONFLICT)
+  })
+
+  it('/POST api/users - Prisma User Already Exists', async () => {
+    ;(prisma.user.findUnique as jest.Mock).mockResolvedValue(null)
+    ;(prisma.user.create as jest.Mock).mockRejectedValue(
+      new PrismaClientKnownRequestError('Test Error', {
+        code: 'P2002',
+        clientVersion: '5.19.0',
+        meta: {
+          target: 'user_email_key',
+        },
+      }),
+    )
+
+    await request(app.getHttpServer()).post(`/api/users`).send(USER_OBJECT).expect(HttpStatus.CONFLICT)
   })
 
   it('/POST api/users - Invalid email', async () => {

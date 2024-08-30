@@ -27,11 +27,11 @@ import { PrismaClientExceptionFilter } from '@shared/filters/prisma-client-excep
     LoggerService,
     {
       provide: APP_FILTER,
-      useClass: PrismaClientExceptionFilter,
+      useClass: HttpExceptionFilter,
     },
     {
       provide: APP_FILTER,
-      useClass: HttpExceptionFilter,
+      useClass: PrismaClientExceptionFilter,
     },
     {
       provide: APP_INTERCEPTOR,

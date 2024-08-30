@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
+  ApiConflictResponse,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -11,7 +12,7 @@ import {
 
 import { CreateUserUseCase, GetAllUsersUseCase, GetUserByIdUseCase } from '@application/useCases/users'
 import { CreateUserDto, GetUserByIdDto, UserDTO } from '@interfaces/dtos/users'
-import { BadRequestError, NotFoundError } from '@shared/errors'
+import { BadRequestError, ConflictError, NotFoundError } from '@shared/errors'
 
 @ApiTags('Users')
 @Controller('users')
@@ -56,6 +57,7 @@ export class UsersController {
   })
   @ApiCreatedResponse({ description: 'User created.', type: UserDTO })
   @ApiBadRequestResponse({ description: 'Invalid user data.', type: BadRequestError })
+  @ApiConflictResponse({ description: 'User already exists.', type: ConflictError })
   async create(@Body() data: CreateUserDto): Promise<UserDTO> {
     const user = await this.createUserUseCase.execute(data)
     return UserDTO.toViewModel(user) as UserDTO

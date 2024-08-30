@@ -1,3 +1,4 @@
+import { ConflictException } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 
 import { CreateUserUseCase } from '@application/useCases/users'
@@ -17,6 +18,7 @@ describe('CreateUserUseCase', () => {
           provide: IUsersRepository,
           useFactory: () => ({
             create: jest.fn(),
+            findOne: jest.fn(),
           }),
         },
       ],
@@ -35,9 +37,16 @@ describe('CreateUserUseCase', () => {
   })
 
   it('should return an user', async () => {
+    ;(usersRepository.findOne as jest.Mock).mockResolvedValue(null)
     ;(usersRepository.create as jest.Mock).mockResolvedValue(USER_OBJECT)
 
     const result = await useCase.execute(USER_OBJECT)
     expect(result).toEqual(USER_OBJECT)
+  })
+
+  it('should throw a ConflictException if the user already exists', async () => {
+    ;(usersRepository.findOne as jest.Mock).mockResolvedValue(USER_OBJECT)
+
+    await expect(useCase.execute(USER_OBJECT)).rejects.toThrow(ConflictException)
   })
 })
