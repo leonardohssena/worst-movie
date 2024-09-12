@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common'
 
 import { HttpService } from '@infra/http'
 
-import { Auth0TokenDto, Auth0UserDto, CreateAuth0UserDto } from './dto'
+import { Auth0TokenDto, Auth0UserDto, CreateAuth0UserDto, UpdateAuth0UserDto } from './dto'
 
 @Injectable()
 export class Auth0Service {
@@ -62,6 +62,18 @@ export class Auth0Service {
 
     const url = `https://${this.auth0Domain}/api/v2/users`
     return this.httpService.post(url, createAuth0UserDto, {
+      headers: {
+        Authorization: this.auth0Token,
+        'Content-Type': 'application/json',
+      },
+    })
+  }
+
+  async updateUser(auth0Id: string, updateAuth0UserDto: UpdateAuth0UserDto): Promise<Auth0UserDto> {
+    await this.ensureTokenIsValid()
+
+    const url = `https://${this.auth0Domain}/api/v2/users/${auth0Id}`
+    return this.httpService.patch(url, updateAuth0UserDto, {
       headers: {
         Authorization: this.auth0Token,
         'Content-Type': 'application/json',

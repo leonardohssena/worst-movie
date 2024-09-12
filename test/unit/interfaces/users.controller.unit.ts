@@ -1,6 +1,11 @@
 import { Test } from '@nestjs/testing'
 
-import { CreateUserUseCase, GetAllUsersUseCase, GetUserByIdUseCase } from '@application/useCases/users'
+import {
+  CreateUserUseCase,
+  GetAllUsersUseCase,
+  GetUserByIdUseCase,
+  UpdateUserUseCase,
+} from '@application/useCases/users'
 import { UsersController } from '@interfaces/controllers/users.controller'
 
 import { USER_DTO_OBJECT, USER_ID, USER_OBJECT } from '../../jest.mocks'
@@ -10,6 +15,7 @@ describe('UsersController', () => {
   let createUserUseCase: CreateUserUseCase
   let getAllUsersUseCase: GetAllUsersUseCase
   let getUserByIdUseCase: GetUserByIdUseCase
+  let updateUserUseCase: UpdateUserUseCase
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -33,6 +39,12 @@ describe('UsersController', () => {
             execute: jest.fn(),
           }),
         },
+        {
+          provide: UpdateUserUseCase,
+          useFactory: () => ({
+            execute: jest.fn(),
+          }),
+        },
       ],
     }).compile()
 
@@ -40,6 +52,7 @@ describe('UsersController', () => {
     getAllUsersUseCase = moduleRef.get<GetAllUsersUseCase>(GetAllUsersUseCase)
     getUserByIdUseCase = moduleRef.get<GetUserByIdUseCase>(GetUserByIdUseCase)
     createUserUseCase = moduleRef.get<CreateUserUseCase>(CreateUserUseCase)
+    updateUserUseCase = moduleRef.get<UpdateUserUseCase>(UpdateUserUseCase)
   })
 
   it('should be defined', () => {
@@ -55,6 +68,19 @@ describe('UsersController', () => {
       ;(createUserUseCase.execute as jest.Mock).mockResolvedValue(USER_OBJECT)
 
       const users = await usersController.create(USER_OBJECT)
+      expect(users).toEqual(USER_DTO_OBJECT)
+    })
+  })
+
+  describe('Method update', () => {
+    it('should have a update method', () => {
+      expect(usersController.update).toBeDefined()
+    })
+
+    it('should to update an user', async () => {
+      ;(updateUserUseCase.execute as jest.Mock).mockResolvedValue(USER_OBJECT)
+
+      const users = await usersController.update({ id: USER_ID }, USER_OBJECT)
       expect(users).toEqual(USER_DTO_OBJECT)
     })
   })

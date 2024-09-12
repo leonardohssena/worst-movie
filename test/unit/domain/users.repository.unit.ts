@@ -19,6 +19,7 @@ describe('UsersRepository', () => {
           useFactory: () => ({
             user: {
               create: jest.fn(),
+              update: jest.fn(),
               findMany: jest.fn(),
               findUnique: jest.fn(),
             },
@@ -44,6 +45,19 @@ describe('UsersRepository', () => {
       ;(prisma.user.create as jest.Mock).mockResolvedValue(USER_OBJECT)
 
       const users = await usersRepository.create(USER_OBJECT)
+      expect(users).toEqual(USER_OBJECT)
+    })
+  })
+
+  describe('Method Update', () => {
+    it('should have a update method', () => {
+      expect(usersRepository.update).toBeDefined()
+    })
+
+    it('should to update an user', async () => {
+      ;(prisma.user.update as jest.Mock).mockResolvedValue(USER_OBJECT)
+
+      const users = await usersRepository.update(USER_ID, USER_OBJECT)
       expect(users).toEqual(USER_OBJECT)
     })
   })

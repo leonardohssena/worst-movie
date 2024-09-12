@@ -19,6 +19,7 @@ describe('HttpService', () => {
           useValue: {
             get: jest.fn(),
             post: jest.fn(),
+            patch: jest.fn(),
           },
         },
       ],
@@ -148,6 +149,52 @@ describe('HttpService', () => {
 
       await expect(service.post('http://example.com', { name: 'test' })).rejects.toThrow(HttpException)
       await expect(service.post('http://example.com', { name: 'test' })).rejects.toThrow(
+        new HttpException('Bad Request', HttpStatus.BAD_REQUEST),
+      )
+    })
+  })
+
+  describe('patch', () => {
+    it('should perform a PATCH request and return the data', async () => {
+      const mockResponse: AxiosResponse = {
+        data: { message: 'updated' },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {
+          headers: new AxiosHeaders(),
+        },
+      }
+
+      jest.spyOn(axiosHttpService, 'patch').mockReturnValue(of(mockResponse))
+
+      const result = await service.patch('http://example.com', { name: 'test' })
+
+      expect(result).toEqual(mockResponse.data)
+      expect(axiosHttpService.patch).toHaveBeenCalledWith('http://example.com', { name: 'test' }, undefined)
+    })
+
+    it('should handle errors in PATCH request', async () => {
+      const mockError = new AxiosError(
+        'Request failed with status code 400',
+        '400',
+        undefined,
+        {},
+        {
+          status: 400,
+          statusText: 'Bad Request',
+          headers: {},
+          config: {
+            headers: new AxiosHeaders(),
+          },
+          data: 'Bad Request',
+        },
+      )
+
+      jest.spyOn(axiosHttpService, 'patch').mockReturnValue(throwError(() => mockError))
+
+      await expect(service.patch('http://example.com', { name: 'test' })).rejects.toThrow(HttpException)
+      await expect(service.patch('http://example.com', { name: 'test' })).rejects.toThrow(
         new HttpException('Bad Request', HttpStatus.BAD_REQUEST),
       )
     })

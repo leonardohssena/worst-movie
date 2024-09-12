@@ -26,6 +26,15 @@ export class HttpService {
     )
   }
 
+  patch<T>(url: string, data: unknown, config?: AxiosRequestConfig): Promise<T> {
+    return lastValueFrom(
+      this.httpService.patch<T>(url, data, config).pipe(
+        map((response: AxiosResponse<T>) => response.data),
+        catchError(this.handleError),
+      ),
+    )
+  }
+
   private handleError(error: AxiosError): Observable<never> {
     throw new HttpException(
       error.response?.data || 'An error occurred during the HTTP request',
