@@ -21,6 +21,7 @@ export class CreateUserUseCase {
     const createAuth0UserDto = new CreateAuth0UserDto({
       email: user.email,
       username: user.name,
+      name: user.name,
     })
     const auth0User = await this.auth0Service.createUser(createAuth0UserDto)
 

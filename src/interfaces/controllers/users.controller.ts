@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common'
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common'
 import {
   ApiBadRequestResponse,
   ApiConflictResponse,
@@ -69,9 +69,15 @@ export class UsersController {
     return UserDTO.toViewModel(user) as UserDTO
   }
 
-  @Put(':id')
+  @Patch(':id')
   @ApiOperation({
     summary: 'Update an user',
+  })
+  @ApiParam({
+    name: 'id',
+    type: String,
+    description: 'The user id',
+    example: '641484f003c96fe562c53abd',
   })
   @ApiCreatedResponse({ description: 'User updated.', type: UserDTO })
   @ApiBadRequestResponse({ description: 'Invalid user data.', type: BadRequestError })

@@ -18,7 +18,8 @@ export abstract class BaseRepository<T> implements IBaseRepository<T> {
     return this.model.create({ data })
   }
 
-  async update(id: string, data: Partial<T>): Promise<T> {
+  async update(id: string, data: Partial<T> & { id: string }): Promise<T> {
+    if (data.id) delete data.id
     return this.model.update({
       where: { id },
       data,

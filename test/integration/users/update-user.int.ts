@@ -40,27 +40,27 @@ describe('UpdateUserEntrypoint', () => {
     await app.init()
   })
 
-  it('/PUT api/users/:id', async () => {
+  it('/PATCH api/users/:id', async () => {
     ;(prisma.user.findUnique as jest.Mock).mockResolvedValueOnce(USER_OBJECT)
     ;(prisma.user.findUnique as jest.Mock).mockResolvedValue(null)
     ;(httpService.post as jest.Mock).mockResolvedValue(AUTH0_USER_OBJECT)
     ;(httpService.patch as jest.Mock).mockResolvedValue(AUTH0_USER_OBJECT)
-    ;(prisma.user.update as jest.Mock).mockResolvedValue(USER_OBJECT)
+    ;(prisma.user.update as jest.Mock).mockResolvedValue({ ...USER_OBJECT })
 
     const response = await request(app.getHttpServer())
-      .put(`/api/users/${USER_ID}`)
+      .patch(`/api/users/${USER_ID}`)
       .send(USER_OBJECT)
       .expect(HttpStatus.OK)
     expect(response.body).toEqual(instanceToPlain(USER_DTO_OBJECT))
   })
 
-  it('/PUT api/users/:id - Invalid id', async () => {
-    await request(app.getHttpServer()).put(`/api/users/12`).send(USER_OBJECT).expect(HttpStatus.BAD_REQUEST)
+  it('/PATCH api/users/:id - Invalid id', async () => {
+    await request(app.getHttpServer()).patch(`/api/users/12`).send(USER_OBJECT).expect(HttpStatus.BAD_REQUEST)
   })
 
-  it('/PUT api/users/:id - Invalid email', async () => {
+  it('/PATCH api/users/:id - Invalid email', async () => {
     await request(app.getHttpServer())
-      .put(`/api/users/${USER_ID}`)
+      .patch(`/api/users/${USER_ID}`)
       .send({
         ...USER_OBJECT,
         email: 'invalid-email',
@@ -68,9 +68,9 @@ describe('UpdateUserEntrypoint', () => {
       .expect(HttpStatus.BAD_REQUEST)
   })
 
-  it('/PUT api/users/:id - Invalid name', async () => {
+  it('/PATCH api/users/:id - Invalid name', async () => {
     await request(app.getHttpServer())
-      .put(`/api/users/${USER_ID}`)
+      .patch(`/api/users/${USER_ID}`)
       .send({
         ...USER_OBJECT,
         name: '',
@@ -78,18 +78,18 @@ describe('UpdateUserEntrypoint', () => {
       .expect(HttpStatus.BAD_REQUEST)
   })
 
-  it('/PUT api/users/:id - User not found', async () => {
+  it('/PATCH api/users/:id - User not found', async () => {
     ;(prisma.user.findUnique as jest.Mock).mockResolvedValue(null)
 
-    await request(app.getHttpServer()).put(`/api/users/${USER_ID}`).send(USER_OBJECT).expect(HttpStatus.NOT_FOUND)
+    await request(app.getHttpServer()).patch(`/api/users/${USER_ID}`).send(USER_OBJECT).expect(HttpStatus.NOT_FOUND)
   })
 
-  it('/PUT api/users/:id - Email already in use', async () => {
+  it('/PATCH api/users/:id - Email already in use', async () => {
     ;(prisma.user.findUnique as jest.Mock).mockResolvedValueOnce(USER_OBJECT)
     ;(prisma.user.findUnique as jest.Mock).mockResolvedValue({ ...USER_OBJECT, email: 'new-email@example.com' })
 
     await request(app.getHttpServer())
-      .put(`/api/users/${USER_ID}`)
+      .patch(`/api/users/${USER_ID}`)
       .send({ ...USER_OBJECT, email: 'new-email@example.com' })
       .expect(HttpStatus.CONFLICT)
   })

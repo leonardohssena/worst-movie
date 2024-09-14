@@ -73,6 +73,20 @@ export class Auth0Service {
     await this.ensureTokenIsValid()
 
     const url = `https://${this.auth0Domain}/api/v2/users/${auth0Id}`
+    if (updateAuth0UserDto.email && updateAuth0UserDto.username) {
+      await this.httpService.patch(
+        url,
+        { username: updateAuth0UserDto.username },
+        {
+          headers: {
+            Authorization: this.auth0Token,
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+
+      delete updateAuth0UserDto.username
+    }
     return this.httpService.patch(url, updateAuth0UserDto, {
       headers: {
         Authorization: this.auth0Token,

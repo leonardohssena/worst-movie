@@ -25,6 +25,7 @@ export class UpdateUserUseCase {
     const updateAuth0UserDto = new UpdateAuth0UserDto({
       email: userData.email,
       username: userData.name,
+      name: userData.name,
     })
     await this.auth0Service.updateUser(user.auth0Id, updateAuth0UserDto)
 

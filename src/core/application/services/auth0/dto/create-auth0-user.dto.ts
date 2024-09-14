@@ -6,6 +6,7 @@ export class CreateAuth0UserDto {
   connection: string
   email: string
   username: string
+  name: string
   password: string
   user_metadata: object
   email_verified: boolean
