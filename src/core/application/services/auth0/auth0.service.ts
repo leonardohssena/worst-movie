@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 
 import { HttpService } from '@infra/http'
 
@@ -6,17 +7,25 @@ import { Auth0TokenDto, Auth0UserDto, CreateAuth0UserDto, UpdateAuth0UserDto } f
 
 @Injectable()
 export class Auth0Service {
-  private readonly auth0Domain = process.env.AUTH0_DOMAIN
-  private readonly auth0ClientId = process.env.AUTH0_CLIENT_ID
-  private readonly auth0ClientSecret = process.env.AUTH0_CLIENT_SECRET
-  private readonly auth0Audience = process.env.AUTH0_AUDIENCE
+  private auth0Domain
+  private auth0ClientId
+  private auth0ClientSecret
+  private auth0Audience
 
   private auth0Token: string
   private tokenExpirationTime: number
 
   private readonly logger = new Logger(Auth0Service.name)
 
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    readonly configService: ConfigService,
+    private readonly httpService: HttpService,
+  ) {
+    this.auth0Domain = configService.get<string>('auth.domain')
+    this.auth0ClientId = configService.get<string>('auth.clientId')
+    this.auth0ClientSecret = configService.get<string>('auth.clientSecret')
+    this.auth0Audience = configService.get<string>('auth.audience')
+  }
 
   private async initAuth0Token() {
     try {
