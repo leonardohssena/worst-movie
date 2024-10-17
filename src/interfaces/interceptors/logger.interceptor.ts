@@ -48,7 +48,6 @@ export class LoggingInterceptor implements NestInterceptor {
               headers: response.getHeaders(),
               body: data,
             },
-            transactionId: correlationHeader,
             isFinal: true,
           },
         )

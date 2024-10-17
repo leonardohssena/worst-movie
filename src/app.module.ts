@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config'
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
 import { TerminusModule } from '@nestjs/terminus'
 
+import loggerConfig from '@config/logger.config'
 import { AuthModule } from '@infra/auth/auth.module'
 import { PrismaModule } from '@infra/database/prisma/prisma.module'
 import { LoggerService } from '@infra/logger/logger.service'
@@ -18,6 +19,7 @@ import { PrismaClientExceptionFilter } from '@shared/filters/prisma-client-excep
   imports: [
     AuthModule,
     ConfigModule.forRoot({ expandVariables: true, isGlobal: true }),
+    ConfigModule.forFeature(loggerConfig),
     HttpModule,
     PrismaModule,
     UsersModule,

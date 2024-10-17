@@ -6,6 +6,8 @@ import * as winston from 'winston'
 
 import sanitizeData from '@shared/helpers/sanitezed-data.helper'
 
+import 'winston-mongodb'
+
 @Injectable()
 export class LoggerService implements NestLoggerService {
   private readonly logger: winston.Logger
@@ -16,7 +18,7 @@ export class LoggerService implements NestLoggerService {
   constructor(private configService: ConfigService) {
     const defaultLoggerConfig = {
       format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
-      level: 'info',
+      level: configService.get<string>('logger.level'),
       transports: [
         new winston.transports.Console({
           format: winston.format.prettyPrint(),
@@ -35,6 +37,22 @@ export class LoggerService implements NestLoggerService {
       defaultMeta: { type: 'TRACE' },
     })
     this.logger.add(new winston.transports.File({ filename: `logs/${this.configService.get('APP_NAME')}_trace.log` }))
+
+    if (configService.get<boolean>('logger.mongoDb.enabled')) {
+      this.loggerTransaction.add(
+        new winston.transports.MongoDB({
+          db: configService.get<string>('logger.mongoDb.uri'),
+          collection: configService.get<string>('logger.mongoDb.transactionCollection'),
+        }),
+      )
+
+      this.logger.add(
+        new winston.transports.MongoDB({
+          db: configService.get<string>('logger.mongoDb.uri'),
+          collection: configService.get<string>('logger.mongoDb.traceCollection'),
+        }),
+      )
+    }
   }
 
   private getTransactionId(): string | undefined {
@@ -48,7 +66,7 @@ export class LoggerService implements NestLoggerService {
   private createTransaction(transactionId: string): string {
     const store = new Map<string, string>().set('transactionId', transactionId)
     this.asyncLocalStorage.enterWith(store)
-    this.logTransaction('Transaction started', transactionId, 'IN_EXECUTION')
+    // this.logTransaction('Transaction started', transactionId, 'IN_EXECUTION')
     return transactionId
   }
 
