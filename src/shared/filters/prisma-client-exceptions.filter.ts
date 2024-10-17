@@ -38,6 +38,8 @@ export class PrismaClientExceptionFilter implements ExceptionFilter {
           message,
           stack: exception.stack,
         },
+        transactionId: correlationHeader,
+        isFinal: true,
       },
     )
 

@@ -5,8 +5,6 @@ import { Observable } from 'rxjs'
 import { tap } from 'rxjs/operators'
 import { v4 as uuid } from 'uuid'
 
-import sanitizeData from '@shared/helpers/sanitezed-data.helper'
-
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
   private logger = new Logger('LoggingInterceptor')
@@ -29,8 +27,11 @@ export class LoggingInterceptor implements NestInterceptor {
     }
 
     this.logger.log(`Incoming Request [${correlationHeader}]: ${method} ${originalUrl}`, {
-      headers: sanitizeData(reqHeaders),
-      body: sanitizeData(reqBody),
+      data: {
+        headers: reqHeaders,
+        body: reqBody,
+      },
+      transactionId: correlationHeader,
     })
 
     return next.handle().pipe(
@@ -39,14 +40,16 @@ export class LoggingInterceptor implements NestInterceptor {
         const responseTime = Date.now() - start
         response.setHeader('X-Duration-Time', responseTime)
 
-        const sanitizedData = Array.isArray(data) ? data.map(item => sanitizeData(item)) : sanitizeData(data)
-
         this.logger.log(
           `Outgoing Response [${correlationHeader}]: ${method} ${originalUrl} ${statusCode} - ${responseTime}ms`,
           {
-            statusCode,
-            headers: sanitizeData(response.getHeaders()),
-            body: sanitizedData,
+            data: {
+              statusCode,
+              headers: response.getHeaders(),
+              body: data,
+            },
+            transactionId: correlationHeader,
+            isFinal: true,
           },
         )
       }),

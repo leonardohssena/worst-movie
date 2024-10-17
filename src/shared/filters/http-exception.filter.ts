@@ -31,6 +31,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
           headers: sanitizeData(response.getHeaders()),
           stack: exception.stack,
         },
+        transactionId: correlationHeader,
+        isFinal: true,
       },
     )
 
