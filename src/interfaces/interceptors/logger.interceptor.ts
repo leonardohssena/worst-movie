@@ -26,10 +26,14 @@ export class LoggingInterceptor implements NestInterceptor {
       return next.handle()
     }
 
-    this.logger.log(`Incoming Request [${correlationHeader}]: ${method} ${originalUrl}`, {
+    this.logger.log(`Request [${correlationHeader}]: ${method} ${originalUrl}`, {
       data: {
         headers: reqHeaders,
         body: reqBody,
+      },
+      meta: {
+        method,
+        originalUrl,
       },
       transactionId: correlationHeader,
     })
@@ -40,17 +44,21 @@ export class LoggingInterceptor implements NestInterceptor {
         const responseTime = Date.now() - start
         response.setHeader('X-Duration-Time', responseTime)
 
-        this.logger.log(
-          `Outgoing Response [${correlationHeader}]: ${method} ${originalUrl} ${statusCode} - ${responseTime}ms`,
-          {
-            data: {
-              statusCode,
-              headers: response.getHeaders(),
-              body: data,
-            },
-            isFinal: true,
+        this.logger.log(`Response [${correlationHeader}]: ${method} ${originalUrl} ${statusCode} - ${responseTime}ms`, {
+          data: {
+            statusCode,
+            headers: response.getHeaders(),
+            body: data,
           },
-        )
+          meta: {
+            method,
+            originalUrl,
+            statusCode,
+            responseTime,
+            type: 'GATEWAY',
+          },
+          isFinal: true,
+        })
       }),
     )
   }

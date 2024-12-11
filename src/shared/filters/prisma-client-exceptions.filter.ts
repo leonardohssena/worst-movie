@@ -30,13 +30,20 @@ export class PrismaClientExceptionFilter implements ExceptionFilter {
     }
 
     this.logger.error(
-      `Outgoing Response With Exception [${correlationHeader}]: ${method} ${originalUrl} ${statusCode} - ${responseTime}ms`,
+      `Response With Exception [${correlationHeader}]: ${method} ${originalUrl} ${statusCode} - ${responseTime}ms`,
       {
         data: {
           statusCode,
           headers: sanitizeData(response.getHeaders()),
           message,
           stack: exception.stack,
+        },
+        meta: {
+          method,
+          originalUrl,
+          statusCode,
+          responseTime,
+          type: 'GATEWAY',
         },
         transactionId: correlationHeader,
         isFinal: true,

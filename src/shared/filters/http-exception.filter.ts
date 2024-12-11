@@ -23,13 +23,20 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const responseData = typeof exceptionResponse === 'string' ? { message: exceptionResponse } : exceptionResponse
 
     this.logger.error(
-      `Outgoing Response With Exception [${correlationHeader}]: ${method} ${originalUrl} ${statusCode} - ${responseTime}ms`,
+      `Response With Exception [${correlationHeader}]: ${method} ${originalUrl} ${statusCode} - ${responseTime}ms`,
       {
         data: {
           ...responseData,
           statusCode,
           headers: sanitizeData(response.getHeaders()),
           stack: exception.stack,
+        },
+        meta: {
+          method,
+          originalUrl,
+          statusCode,
+          responseTime,
+          type: 'GATEWAY',
         },
         transactionId: correlationHeader,
         isFinal: true,
