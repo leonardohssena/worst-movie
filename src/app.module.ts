@@ -5,10 +5,9 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core'
 import { TerminusModule } from '@nestjs/terminus'
 
 import loggerConfig from '@config/logger.config'
-import { AuthModule } from '@infra/auth/auth.module'
 import { PrismaModule } from '@infra/database/prisma/prisma.module'
 import { LoggerService } from '@infra/logger/logger.service'
-import { UsersModule } from '@infra/modules/users.module'
+import { ProducersModule } from '@infra/modules/producers.module'
 import { HealthController } from '@infra/terminus'
 import { LoggingInterceptor } from '@interfaces/interceptors/logger.interceptor'
 import { HttpExceptionFilter } from '@shared/filters/http-exception.filter'
@@ -17,12 +16,11 @@ import { PrismaClientExceptionFilter } from '@shared/filters/prisma-client-excep
 @Module({
   controllers: [HealthController],
   imports: [
-    AuthModule,
     ConfigModule.forRoot({ expandVariables: true, isGlobal: true }),
     ConfigModule.forFeature(loggerConfig),
     HttpModule,
     PrismaModule,
-    UsersModule,
+    ProducersModule,
     TerminusModule,
   ],
   providers: [

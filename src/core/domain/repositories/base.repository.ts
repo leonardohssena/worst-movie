@@ -6,10 +6,15 @@ export abstract class BaseRepository<T> implements IBaseRepository<T> {
     protected readonly model: { findMany: any; findUnique: any; create: any; update: any; delete: any },
   ) {}
 
-  async findAll(): Promise<T[]> {
-    return this.model.findMany()
+  async findAll(filters?: Partial<T>): Promise<T[]> {
+    return this.model.findMany({ where: filters })
   }
-
+  async findMany(filters?: Partial<T>, orderBy?: { [K in keyof T]?: 'asc' | 'desc' }): Promise<T[]> {
+    return this.model.findMany({
+      where: filters,
+      orderBy,
+    })
+  }
   async findOne(data: Partial<T>): Promise<T | null> {
     return this.model.findUnique({ where: data })
   }

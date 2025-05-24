@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common'
 
-import User from '@domain/models/users.model'
+import Movie from '@domain/models/movies.model'
 import { PrismaService } from '@infra/database/prisma/prisma.service'
 
 import { BaseRepository } from '../base.repository'
 
-import { IUsersRepository } from './users.protocol'
+import { IMoviesRepository } from './movies.protocol'
 
 @Injectable()
-export class UsersRepository extends BaseRepository<User> implements IUsersRepository {
+export class MoviesRepository extends BaseRepository<Movie> implements IMoviesRepository {
   constructor(protected readonly prisma: PrismaService) {
-    super(prisma.user)
+    super(prisma.movie)
   }
 }
