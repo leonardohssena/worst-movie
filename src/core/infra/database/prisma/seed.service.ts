@@ -61,6 +61,7 @@ export class SeedService implements OnModuleInit {
       year: parseInt(record.year, 10),
       studios: record.studios,
       producers: record.producers
+        .replace(/, and /gi, ',')
         .replace(/ and /gi, ',')
         .split(',')
         .map(p => p.trim())

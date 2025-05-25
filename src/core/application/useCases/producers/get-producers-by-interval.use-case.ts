@@ -18,6 +18,32 @@ export type ProducersIntervalResponse = {
 export class GetProducersByIntervalUseCase {
   constructor(private readonly movieRepository: IMoviesRepository) {}
 
+  private getMinInterval(years: number[]) {
+    const minInterval = years.reduce(
+      (current, year, index) => {
+        if (index === 0) return current
+        const previousWin = years[index - 1]
+        const interval = year - previousWin
+        if (interval < current.interval || current.interval === 0) {
+          return { interval, previousWin, followingWin: year }
+        }
+        return current
+      },
+      { interval: 0, previousWin: 0, followingWin: 0 },
+    )
+    return minInterval
+  }
+
+  private getMaxInterval(years: number[]) {
+    const firstYear = years[0]
+    const lastYear = years[years.length - 1]
+    return {
+      interval: lastYear - firstYear,
+      previousWin: firstYear,
+      followingWin: lastYear,
+    }
+  }
+
   async execute(): Promise<ProducersIntervalResponse> {
     const movies = await this.movieRepository.findAll(
       {
@@ -38,25 +64,21 @@ export class GetProducersByIntervalUseCase {
       return previous
     }, new Map<string, number[]>())
 
-    const [minProducerInterval, maxProducerInterval] = Array.from(producerAndYears.entries()).reduce(
-      ([minProducerInterval, maxProducerInterval], [producer, years]) => {
-        if (years.length < 2) return [minProducerInterval, maxProducerInterval]
+    const { minProducerInterval, maxProducerInterval } = Array.from(producerAndYears.entries()).reduce(
+      ({ minProducerInterval, maxProducerInterval }, [producer, years]) => {
+        if (years.length < 2) return { minProducerInterval, maxProducerInterval }
 
         const sortedYears = years.sort((a, b) => a - b)
 
-        const firstYear = sortedYears[0]
-        const secondYear = sortedYears[1]
-        const lastYear = sortedYears[sortedYears.length - 1]
+        const minInterval = this.getMinInterval(sortedYears)
+        const maxInterval = this.getMaxInterval(sortedYears)
 
-        const minInterval = secondYear - firstYear
-        const maxInterval = lastYear - firstYear
+        minProducerInterval.push({ producer, ...minInterval })
+        maxProducerInterval.push({ producer, ...maxInterval })
 
-        minProducerInterval.push({ producer, interval: minInterval, previousWin: firstYear, followingWin: secondYear })
-        maxProducerInterval.push({ producer, interval: maxInterval, previousWin: firstYear, followingWin: lastYear })
-
-        return [minProducerInterval, maxProducerInterval]
+        return { minProducerInterval, maxProducerInterval }
       },
-      [[], []],
+      { minProducerInterval: [], maxProducerInterval: [] },
     )
 
     return {
