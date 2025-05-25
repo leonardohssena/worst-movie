@@ -51,7 +51,7 @@ export class GetProducersByIntervalUseCase {
         const minInterval = secondYear - firstYear
         const maxInterval = lastYear - firstYear
 
-        minProducerInterval.push({ producer, interval: minInterval, previousWin: firstYear, followingWin: lastYear })
+        minProducerInterval.push({ producer, interval: minInterval, previousWin: firstYear, followingWin: secondYear })
         maxProducerInterval.push({ producer, interval: maxInterval, previousWin: firstYear, followingWin: lastYear })
 
         return [minProducerInterval, maxProducerInterval]

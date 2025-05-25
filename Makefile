@@ -6,7 +6,7 @@ PRISMA_SCHEMA = ./prisma/schema.prisma
 PACKAGE_JSON = package.json
 
 # Path variables for better readability
-PNPM = pnpm
+NPM = npm
 PRISMA = npx prisma
 
 # Help function to list all available commands
@@ -27,31 +27,31 @@ help:
 .PHONY: dev
 dev:
 	@echo "Starting the application in development mode..."
-	$(PNPM) start:dev
+	$(NPM) start:dev
 
 # Start the application in production mode
 .PHONY: start
 start:
 	@echo "Starting the application in production mode..."
-	$(PNPM) start
+	$(NPM) start
 
 # Run the tests
 .PHONY: test
 test:
 	@echo "Running unit and integration tests..."
-	$(PNPM) test
+	$(NPM) test
 
 # Run ESLint to check code quality
 .PHONY: lint
 lint:
 	@echo "Running ESLint..."
-	$(PNPM) lint
+	$(NPM) lint
 
 # Format the code using Prettier
 .PHONY: format
 format:
 	@echo "Formatting code with Prettier..."
-	$(PNPM) format
+	$(NPM) format
 
 # Prisma-related commands
 
@@ -69,17 +69,17 @@ prisma-studio:
 	@echo "Opening Prisma Studio..."
 	$(PRISMA) studio --schema $(PRISMA_SCHEMA)
 
-# Update project dependencies (using pnpm)
+# Update project dependencies (using npm)
 .PHONY: update-libs
 update-libs:
 	@echo "Updating project dependencies..."
 	ncu -u
-	$(PNPM) install
+	$(NPM) install
 
 # Clean up temporary files and caches
 .PHONY: clean
 clean:
 	@echo "Cleaning up caches and temporary files..."
 	rm -rf node_modules dist .cache .next
-	$(PNPM) store prune
-	$(PNPM) cache clean --force
+	$(NPM) store prune
+	$(NPM) cache clean --force

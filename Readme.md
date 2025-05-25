@@ -47,7 +47,9 @@ Clone the repository, create env file and install the dependencies:
 git clone https://github.com/leonardohssena/worst-movie.git
 cd worst-movie
 cp .env.example .env
-pnpm install
+nvm use
+npm install
+make prisma-update
 ```
 
 ## ▶️ Running the Application
@@ -55,14 +57,14 @@ pnpm install
 ### Development
 
 ```bash
-pnpm run start:dev
+npm run start:dev
 ```
 
 ### Production
 
 ```bash
-pnpm run build
-pnpm run start:prod
+npm run build
+npm run start:prod
 ```
 
 On startup, the app automatically reads and imports data from the CSV file into an in-memory SQLite database.
