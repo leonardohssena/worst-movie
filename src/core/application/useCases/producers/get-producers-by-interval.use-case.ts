@@ -6,7 +6,7 @@ export type ProducersInterval = {
   producer: string
   interval: number
   previousWin: number
-  followWin: number
+  followingWin: number
 }
 
 export type ProducersIntervalResponse = {
@@ -51,8 +51,8 @@ export class GetProducersByIntervalUseCase {
         const minInterval = secondYear - firstYear
         const maxInterval = lastYear - firstYear
 
-        minProducerInterval.push({ producer, interval: minInterval, previousWin: firstYear, followWin: lastYear })
-        maxProducerInterval.push({ producer, interval: maxInterval, previousWin: firstYear, followWin: lastYear })
+        minProducerInterval.push({ producer, interval: minInterval, previousWin: firstYear, followingWin: lastYear })
+        maxProducerInterval.push({ producer, interval: maxInterval, previousWin: firstYear, followingWin: lastYear })
 
         return [minProducerInterval, maxProducerInterval]
       },

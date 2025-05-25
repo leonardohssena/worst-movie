@@ -30,7 +30,7 @@ class ProducersIntervalDTO {
     description: 'The follow win year',
     example: 2012,
   })
-  followWin: number
+  followingWin: number
 }
 
 export class ProducersIntervalResponseDTO {
@@ -42,7 +42,7 @@ export class ProducersIntervalResponseDTO {
         producer: 'John Doe',
         interval: 2,
         previousWin: 2010,
-        followWin: 2012,
+        followingWin: 2012,
       },
     ],
   })
@@ -56,7 +56,7 @@ export class ProducersIntervalResponseDTO {
         producer: 'John Doe',
         interval: 2,
         previousWin: 2010,
-        followWin: 2012,
+        followingWin: 2012,
       },
     ],
   })
